@@ -2,34 +2,39 @@
 const tlog = require("traccelog")
 const maskkcard = require("maskkcard")
 
-module.exports = function(path, saveAtLocal) {
+    function TraccePCI(path, saveCopyAtLocal) {  
 
-    function logInfoRequest(id, content, keysForMasking) {
+        this.path = path;
+        this.saveCopyAtLocal = saveCopyAtLocal; 
+
+    }
+
+    TraccePCI.prototype.logInfoRequest = function(id, content, keysForMasking) {
         const maskedContent =  maskContent(content, keysForMasking);
-        tlog.logPathRequest(path,id, maskedContent);
+        tlog.logPathRequest(this.path,id, maskedContent);
         
-        if(saveAtLocal){ tlog.logInfoRequest(id, maskedContent)}
+        if(this.saveCopyAtLocal){ tlog.logInfoRequest(id, maskedContent)}
     }
 
-    function logInfoResponse(id, content, keysForMasking) {
+    TraccePCI.prototype.logInfoResponse = function(id, content, keysForMasking) {
         const maskedContent =  maskContent(content, keysForMasking);
-        tlog.logPathResponse(path,id, maskedContent);
+        tlog.logPathResponse(this.path,id, maskedContent);
 
-        if(saveAtLocal){ tlog.logInfoResponse(id, maskedContent)}
+        if(this.saveCopyAtLocal){ tlog.logInfoResponse(id, maskedContent)}
     }
 
-    function logInfoWrite(id, content, keysForMasking) {
+    TraccePCI.prototype.logInfoWrite = function(id, content, keysForMasking) {
         const maskedContent =  maskContent(content, keysForMasking);
-        tlog.logPathWrite(path,id, maskedContent);
+        tlog.logPathWrite(this.path,id, maskedContent);
 
-        if(saveAtLocal){ tlog.logInfoWrite(id, maskedContent)}
+        if(this.saveCopyAtLocal){ tlog.logWrite(id, maskedContent)}
     }
 
-    function logInfoError(id, content, keysForMasking) {
+    TraccePCI.prototype.logInfoError = function(id, content, keysForMasking) {
         const maskedContent =  maskContent(content, keysForMasking);
-        tlog.logPathError(path,id, maskedContent);
+        tlog.logPathError(this.path,id, maskedContent);
 
-        if(saveAtLocal){ tlog.logInfoError(id, maskedContent)}
+        if(this.saveCopyAtLocal){ tlog.logError(id, maskedContent)}
     }
 
     function maskContent(content, keysForMasking){
@@ -41,15 +46,4 @@ module.exports = function(path, saveAtLocal) {
         return maskedContent;
     }
 
-  
-
-    return {
-
-        logInfoRequest: logInfoRequest,
-        logInfoResponse: logInfoResponse,
-        logInfoWrite: logInfoWrite,
-        logInfoError: logInfoError
-
-    };
-
-};
+module.exports = TraccePCI;
